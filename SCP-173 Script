@@ -1,0 +1,37 @@
+local scp173 = script.Parent
+local speed = 5 -- The speed at which SCP-173 moves
+
+-- Create a function to move SCP-173 to a random position within a certain distance
+function moveToRandomPosition(distance)
+	local randomPosition = scp173.Position + Vector3.new(math.random(-distance, distance), 0, math.random(-distance, distance))
+	scp173:MoveTo(randomPosition, speed)
+end
+
+-- Create a function to chase the closest player
+function chaseClosestPlayer()
+	-- Find the closest player
+	local closestPlayer = nil
+	local closestDistance = math.huge
+	for _, player in pairs(game.Players:GetPlayers()) do
+		local distance = (player.Character.HumanoidRootPart.Position - scp173.Position).Magnitude
+		if distance < closestDistance then
+			closestPlayer = player
+			closestDistance = distance
+		end
+	end
+
+	-- If a player was found, move towards them
+	if closestPlayer then
+		scp173:MoveTo(closestPlayer.Character.HumanoidRootPart.Position, speed)
+	end
+end
+
+-- Create a loop to randomly move SCP-173 around
+while true do
+	wait(5) -- Wait 5 seconds before moving again
+	if math.random() < 0.5 then
+		moveToRandomPosition(10) -- Move to a random position within 10 studs
+	else
+		chaseClosestPlayer() -- Chase the closest player
+	end
+end
